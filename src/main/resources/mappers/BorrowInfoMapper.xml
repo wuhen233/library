@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.library.mapper.BorrowInfoMapper">
+  <resultMap id="BaseResultMap" type="edu.library.entity.BorrowInfo">
+    <id column="borrow_id" jdbcType="INTEGER" property="borrowId" />
+    <result column="reader_id" jdbcType="BIGINT" property="readerId" />
+    <result column="book_id" jdbcType="INTEGER" property="bookId" />
+    <result column="borrow_time" jdbcType="TIMESTAMP" property="borrowTime" />
+    <result column="expire_time" jdbcType="TIMESTAMP" property="expireTime" />
+    <association property="bookInfo" column="book_id" javaType="edu.library.entity.Book" select="edu.library.mapper.BookMapper.selectBookById"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    borrow_id, reader_id, book_id, borrow_time, expire_time
+  </sql>
+  <select id="selectByReaderId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from borrow_info
+    where reader_id = #{readerId,jdbcType=BIGINT}
+  </select>
+  <select id="selectByBookId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from borrow_info
+    where book_id = #{bookId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByReaderIdAndBookId" parameterType="java.lang.Number">
+    delete from borrow_info
+    where book_id = #{bookId,jdbcType=INTEGER} and reader_id = #{readerId,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByBookId" parameterType="java.lang.Integer">
+    delete from borrow_info
+    where book_id = #{bookId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="edu.library.entity.BorrowInfo">
+    insert into borrow_info (reader_id, book_id,
+      borrow_time, expire_time)
+    values (#{readerId,jdbcType=BIGINT}, #{bookId,jdbcType=INTEGER},
+      #{borrowTime,jdbcType=TIMESTAMP}, #{expireTime,jdbcType=TIMESTAMP})
+  </insert>
+</mapper>

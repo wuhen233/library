@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.library.mapper.TypeMapper">
+    <resultMap id="BaseResultMap" type="edu.library.entity.Type">
+        <id column="type_id" jdbcType="INTEGER" property="typeId" />
+        <result column="type_name" jdbcType="VARCHAR" property="typeName" />
+
+    </resultMap>
+    <sql id="Base_Column_List">
+        type_id, type_name
+    </sql>
+    <select id="selectByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from type_info
+        where type_name = #{adminName,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteById" parameterType="java.lang.Integer">
+        delete from type_info
+        where type_id = #{adminId,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="edu.library.entity.Type">
+        insert into type_info (type_name)
+        values (#{typeName,jdbcType=VARCHAR} )
+    </insert>
+    <update id="updateById" parameterType="edu.library.entity.Type">
+        update type_info
+        <set>
+            <if test="typeName != null">
+                admin_name = #{typeName,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where type_id = #{typeId,jdbcType=INTEGER}
+    </update>
+    <select id="selectAlltypes" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from type_info
+    </select>
+</mapper>

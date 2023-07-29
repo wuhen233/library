@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.library.mapper.ReaderMapper">
+  <resultMap id="BaseResultMap" type="edu.library.entity.Reader">
+    <id column="reader_id" jdbcType="BIGINT" property="readerId" />
+    <result column="reader_name" jdbcType="VARCHAR" property="readerName" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="status" jdbcType="BIT" property="status" />
+    <result column="fine" jdbcType="DECIMAL" property="fine" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    reader_id, reader_name, phone, status, fine, create_time
+  </sql>
+  <select id="selectReaderById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from reader_info
+    where reader_id = #{readerId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteReaderById" parameterType="java.lang.Long">
+    delete from reader_info
+    where reader_id = #{readerId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="edu.library.entity.Reader">
+    insert into reader_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="readerId != null">
+        reader_id,
+      </if>
+      <if test="readerName != null">
+        reader_name,
+      </if>
+      <if test="phone != null">
+        phone,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="fine != null">
+        fine,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="readerId != null">
+        #{readerId,jdbcType=BIGINT},
+      </if>
+      <if test="readerName != null">
+        #{readerName,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=BIT},
+      </if>
+      <if test="fine != null">
+        #{fine,jdbcType=DECIMAL},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateReaderById" parameterType="edu.library.entity.Reader">
+    update reader_info
+    <set>
+      <if test="readerName != null">
+        reader_name = #{readerName,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=BIT},
+      </if>
+      <if test="fine != null">
+        fine = #{fine,jdbcType=DECIMAL},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where reader_id = #{readerId,jdbcType=BIGINT}
+  </update>
+  
+  <select id="selectReadersByReaderParam" resultMap="BaseResultMap" parameterType="edu.library.param.ReaderParam">
+    select
+    <include refid="Base_Column_List"/>
+    from reader_info
+    <where>
+        <if test="readerId != null">
+          reader_id = #{readerId,jdbcType=BIGINT}
+        </if>
+        <if test="readerName != null">
+        and  reader_name like concat('%', #{readerName,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="phone != null">
+        and  phone = #{phone,jdbcType=VARCHAR}
+        </if>
+    </where>
+    <if test="page!=null and limit!=null">
+      limit ${limit*(page-1)}, #{limit}
+    </if>
+  </select>
+
+  <select id="selectCount" resultType="java.lang.Integer">
+    select count(*) from reader_info
+  </select>
+
+</mapper>
